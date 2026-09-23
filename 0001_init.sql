@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS players (id TEXT PRIMARY KEY, access_hash TEXT NOT NULL, chips INTEGER NOT NULL DEFAULT 0 CHECK(chips>=0), version INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS sessions (token_hash TEXT PRIMARY KEY, player_id TEXT NOT NULL REFERENCES players(id), expires_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS requests (id TEXT PRIMARY KEY, player_id TEXT NOT NULL REFERENCES players(id), code_hash TEXT NOT NULL UNIQUE, status TEXT NOT NULL DEFAULT 'issued' CHECK(status IN ('issued','pending','approved','rejected')), amount INTEGER, chips_awarded INTEGER, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, activated_at TEXT, decided_at TEXT);
+CREATE INDEX IF NOT EXISTS idx_requests_player ON requests(player_id);
+CREATE INDEX IF NOT EXISTS idx_requests_status ON requests(status);
+CREATE TABLE IF NOT EXISTS series (id TEXT PRIMARY KEY, request_id TEXT NOT NULL UNIQUE REFERENCES requests(id), player_id TEXT NOT NULL REFERENCES players(id), stake INTEGER NOT NULL, current INTEGER NOT NULL, spins INTEGER NOT NULL DEFAULT 0, status TEXT NOT NULL DEFAULT 'ready' CHECK(status IN ('ready','won','closed')), created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS spins (id TEXT PRIMARY KEY, series_id TEXT NOT NULL REFERENCES series(id), player_id TEXT NOT NULL REFERENCES players(id), choice TEXT NOT NULL, outcome TEXT NOT NULL, payout INTEGER NOT NULL, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS audit (id TEXT PRIMARY KEY, actor TEXT NOT NULL, action TEXT NOT NULL, subject TEXT NOT NULL, details TEXT, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+INSERT OR IGNORE INTO settings(key,value) VALUES ('contact','https://t.me/MK_Admin_XM'),('cashiers','[]'),('prizes','[]'),('start_at',''),('end_at',''),('contest_open','false'),('final_open','false'),('over_10000','manual');
