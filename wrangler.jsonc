@@ -1,6 +1,6 @@
 {
   "name": "roulette-contest",
-  "main": "src/worker.js",
+  "main": "worker.js",
   "compatibility_date": "2026-09-01",
   "assets": {"directory":"./public", "binding":"ASSETS", "run_worker_first":["/api/*"]},
   "d1_databases": [{"binding":"DB", "database_name":"roulette-contest", "database_id":"REPLACE_WITH_D1_DATABASE_ID", "migrations_dir":"migrations"}]
