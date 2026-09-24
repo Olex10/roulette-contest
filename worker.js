@@ -669,4 +669,10 @@ export default {
     }
 
     try {
-      return await
+      return await route(req, env);
+    } catch (error) {
+      console.error(error);
+      return fail(error.message || 'Внутренняя ошибка сервера', 500);
+    }
+  }
+};
